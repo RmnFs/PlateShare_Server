@@ -3,6 +3,7 @@ const express = require("express");
 const cors = require("cors");
 const connectDB = require("./db/connection");
 const foodsRouter = require("./routes/foods");
+const requestsRouter = require("./routes/requests");
 
 
 const app = express();
@@ -11,6 +12,7 @@ const port = process.env.PORT || 3000;
 app.use(cors());
 app.use(express.json());
 app.use("/api/foods", foodsRouter);
+app.use("/api/requests", requestsRouter);
 
 // Base route
 app.get("/", (req, res) => {
