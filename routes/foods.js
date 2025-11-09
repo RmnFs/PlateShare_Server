@@ -72,4 +72,44 @@ router.delete("/:id", async (req, res) => {
   }
 });
 
+
+
+
+// Get featured foods (top 6 by quantity number)
+router.get("/featured/list", async (req, res) => {
+  try {
+    const db = await connectDB();
+    const foods = await db
+      .collection("foods")
+      .find({ food_status: "available" })
+      .toArray();
+
+    const sorted = foods
+      .map((item) => ({
+        ...item,
+        numServes: parseInt(item.food_quantity) || 0,
+      }))
+      .sort((a, b) => b.numServes - a.numServes)
+      .slice(0, 6);
+
+    res.json(sorted);
+  } catch (err) {
+    res.status(500).json({ error: "Failed to fetch featured foods" });
+  }
+});
+
+// Get foods by donator email
+router.get("/my/:email", async (req, res) => {
+  try {
+    const db = await connectDB();
+    const foods = await db
+      .collection("foods")
+      .find({ donator_email: req.params.email })
+      .toArray();
+    res.json(foods);
+  } catch (err) {
+    res.status(500).json({ error: "Failed to fetch user’s foods" });
+  }
+});
+
 module.exports = router;
