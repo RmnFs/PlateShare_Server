@@ -65,4 +65,20 @@ router.patch("/:id", async (req, res) => {
   }
 });
 
+
+
+// Get all requests made by a specific user
+router.get("/user/:email", async (req, res) => {
+  try {
+    const db = await connectDB();
+    const userRequests = await db
+      .collection("requests")
+      .find({ userEmail: req.params.email })
+      .toArray();
+    res.json(userRequests);
+  } catch (err) {
+    res.status(500).json({ error: "Failed to fetch user's requests" });
+  }
+});
+
 module.exports = router;
